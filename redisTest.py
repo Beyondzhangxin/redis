@@ -1,6 +1,8 @@
 import datetime
 import json
 import pickle
+import threading
+from time import sleep
 
 import redis  # 导入redis模块，通过python操作redis 也可以直接在redis主机的服务端操作缓存数据库
 
@@ -47,24 +49,39 @@ from qinghai import connect_mysql
 
 
 def main():
-    REDIS_ADDR = '123.56.235.47'
-    REDIS_PORT = 8200
-    REDIS_PASS = 'DogStandNFdoa1'
-    r = redis.Redis(host=REDIS_ADDR, port=REDIS_PORT, password=REDIS_PASS, db=0)
+    # REDIS_ADDR = '123.56.235.47'
+    # REDIS_PORT = 8200
+    # REDIS_PASS = 'DogStandNFdoa1'
+    # r = redis.Redis(host=REDIS_ADDR, port=REDIS_PORT, password=REDIS_PASS, db=0)
+    #
+    #
+    # data_ctyd_buffer = r.blpop("data_ctyd_buffer", 0)
+    #
+    # mylist=list(eval(data_ctyd_buffer[1]))
+    # mylist[0]=mylist[0].strftime('%Y-%m-%d %H:%M:%S')
+    #
+    # print(tuple(mylist))
+    #
+    # connect_mysql.delete("data_ctyd_buffer")
+    # connect_mysql.insert("data_ctyd_history", str(tuple(mylist)))
+    # connect_mysql.insert("data_ctyd_buffer", str(tuple(mylist)))
 
-
-    data_ctyd_buffer = r.blpop("data_ctyd_buffer", 0)
-
-    mylist=list(eval(data_ctyd_buffer[1]))
-    mylist[0]=mylist[0].strftime('%Y-%m-%d %H:%M:%S')
-
-    print(tuple(mylist))
-
-    connect_mysql.delete("data_ctyd_buffer")
-    connect_mysql.insert("data_ctyd_history", str(tuple(mylist)))
-    connect_mysql.insert("data_ctyd_buffer", str(tuple(mylist)))
-
-
+    def loop1():
+        t1=datetime.datetime.now()
+        sleep(5)
+        timer=threading.Timer(2,loop1)
+        t2=datetime.datetime.now()
+        print(str((t2-t1).seconds)+"       from loop 1")
+        timer.start()
+    def loop2():
+        t1=datetime.datetime.now()
+        sleep(5)
+        timer=threading.Timer(2,loop2)
+        t2=datetime.datetime.now()
+        print(str((t2-t1).seconds)+"     from loop 2")
+        timer.start()
+    loop1()
+    loop2()
 if __name__ == '__main__':
     main()
 
